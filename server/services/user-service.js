@@ -3,16 +3,16 @@ import * as uuid from 'uuid'
 
 import UserModel from '../models/user-model.js'
 import UserDTO from '../dtos/user-dto.js'
+import ApiError from '../exceptions/api-error.js'
 
 import mailService from './mail-service.js'
 import tokenService from './token-service.js'
-
 
 class UserService {
 
     async registration(email, password) {
         const isEmailExist = await UserModel.findOne({ email })
-        if (isEmailExist) throw new Error('email already exist')
+        if (isEmailExist) throw ApiError.BadRequest('email already exist')
             
         const hashedPassword = await bcrypt.hash(password, 3)
         const activationLink = uuid.v4()
@@ -31,7 +31,7 @@ class UserService {
     async activate(activationLink) {
         const user = await UserModel.findOne({ activationLink })
 
-        if (!user) throw new Error('invalid activate link')
+        if (!user) throw ApiError.BadRequest('invalid activate link')
 
         user.isActivated = true
 

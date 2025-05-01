@@ -4,21 +4,16 @@ config()
 
 class UserController {
 
-    static _errorHandler(res, error, statusCode = 500) {
-        return res.status(statusCode).json(error.message)
-    }
-
-
-    async getUsers(req, res) {
+    async getUsers(req, res, next) {
         try {
 
         } catch(error) {
-            UserController._errorHandler(res, error )
+            next(error)
         }
     }
 
 
-    async registration(req, res) {
+    async registration(req, res, next) {
         try {
             const { email, password } = req.body
 
@@ -27,30 +22,30 @@ class UserController {
             res.cookie('refreshToken', userData.refreshToken, { httpOnly: true, maxAge: 3600 * 24 * 30, secure: true })
             res.json(userData)
         } catch(error) {    
-            UserController._errorHandler(res, error)
+            next(error)
         }
     }   
     
     
-    async login(req, res) {
+    async login(req, res, next) {
         try {
 
         } catch(error) {
-            UserController._errorHandler(res, error )
+            next(error)
         }
     }   
 
 
-    async logout(req, res) {
+    async logout(req, res, next) {
         try {
 
         } catch(error) {
-            UserController._errorHandler(res, error )
+            next(error)
         }
     }   
 
 
-    async activate(req, res) {
+    async activate(req, res, next) {
         try {
             const activationLink = req.params.link
 
@@ -58,16 +53,16 @@ class UserController {
 
             res.redirect(process.env.CLIENT_URL)
         } catch(error) {
-            UserController._errorHandler(res, error )
+            next(error)
         }
     }   
 
 
-    async refresh(req, res) {
+    async refresh(req, res, next) {
         try {
 
         } catch(error) {
-            UserController._errorHandler(res, error )
+            next(error)
         }
     }   
 
