@@ -1,5 +1,7 @@
 import userService from "../services/user-service.js"
+import { validationResult } from "express-validator"
 import { config } from 'dotenv'
+import ApiError from "../exceptions/api-error.js"
 config()
 
 class UserController {
@@ -15,6 +17,13 @@ class UserController {
 
     async registration(req, res, next) {
         try {
+
+            const errors = validationResult(req)
+
+            if (!errors.isEmpty()) {
+                return next(ApiError.BadRequest('validation issue', errors.array()))
+            }
+
             const { email, password } = req.body
 
             const userData = await userService.registration(email, password)
