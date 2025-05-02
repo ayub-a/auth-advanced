@@ -1,13 +1,7 @@
 import path from 'path'
-import { fileURLToPath } from 'url';
 import type { Configuration } from 'webpack'
 import HTMLWebpackPlugin from 'html-webpack-plugin'
 import 'webpack-dev-server'
-
-
-// WTF ?
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 
 const config: Configuration = {
