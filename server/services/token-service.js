@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import TokenModel from '../models/token-model.js'
+import tokenModel from '../models/token-model.js'
 
 
 class TokenService {
@@ -27,6 +28,32 @@ class TokenService {
 
     async removeToken(refreshToken) {
         await TokenModel.deleteOne({ refreshToken })
+    }
+
+
+    validateAccessToken(token) {
+        try {
+            const userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET)
+            return userData
+        } catch (error) {
+            return null
+        }
+    }
+
+
+    validateRefreshToken(token) {
+        try {
+            const userData = jwt.verify(token, process.env.JWT_REFRESH_SECRET)
+            return userData
+        } catch (error) {
+            return null
+        }
+    }
+
+
+    async findToken(refreshToken) {
+        const tokenData = await TokenModel.findOne({ refreshToken })
+        return tokenData
     }
     
 }

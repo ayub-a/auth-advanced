@@ -8,6 +8,7 @@ import ApiError from '../exceptions/api-error.js'
 import mailService from './mail-service.js'
 import tokenService from './token-service.js'
 
+
 class UserService {
 
     async registration(email, password) {
@@ -38,6 +39,7 @@ class UserService {
         await user.save()
     }
 
+
     async login(email, password) {
         const user = await UserModel.findOne({ email })
         if (!user) throw ApiError.BadRequest('wrong email or password')
@@ -52,8 +54,26 @@ class UserService {
         return { ...tokens, user: userDto }
     }
 
+
     async logout(refreshToken) {
         await tokenService.removeToken(refreshToken)
+    }
+
+
+    async refreshToken(refreshToken) {
+        if (!refreshToken) throw ApiError.UnauthError()
+
+        const userData = tokenService.validateRefreshToken(refreshToken)
+        const tokenFromDb = await tokenService.findToken(refreshToken)
+
+        if (!userData || !tokenFromDb) throw ApiError.UnauthError()
+        
+        const user = await UserModel.findById(userData.id)
+        const userDto = new UserDTO(user)
+        const tokens = tokenService.generateTokens({ ...userDto })
+        await tokenService.saveToken(userDto.id, tokens.refreshToken)
+
+        return { ...tokens, user: userDto }
     }
     
 }
