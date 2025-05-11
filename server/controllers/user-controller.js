@@ -6,9 +6,10 @@ config()
 
 class UserController {
 
-    async getUsers(req, res, next) {
+    async getAllUsers(req, res, next) {
         try {
-
+            const users = await userService.getAllUsers()
+            res.json(users)
         } catch(error) {
             next(error)
         }
