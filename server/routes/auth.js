@@ -15,7 +15,7 @@ router
 
     .post('/login', userController.login)
     .post('/logout', userController.logout)
-    .post('/refresh', userController.refresh)
+    .get('/refresh', userController.refresh)
     .get('/activate/:link', userController.activate)
     .get('/users', authMiddleware, userController.getAllUsers)
 

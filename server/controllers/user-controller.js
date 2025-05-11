@@ -1,8 +1,10 @@
-import userService from "../services/user-service.js"
-import { validationResult } from "express-validator"
 import { config } from 'dotenv'
-import ApiError from "../exceptions/api-error.js"
 config()
+
+import { validationResult } from "express-validator"
+
+import userService from "../services/user-service.js"
+import ApiError from "../exceptions/api-error.js"
 
 class UserController {
 
@@ -84,7 +86,7 @@ class UserController {
 
             const tokenData = await userService.refreshToken(refreshToken)
 
-            res.cookie('refreshToken', userData.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 30, secure: true })
+            res.cookie('refreshToken', tokenData.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 30, secure: true })
             res.json(tokenData)
         } catch(error) {
             next(error)

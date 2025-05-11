@@ -1,3 +1,6 @@
+import { config } from 'dotenv'
+config()
+
 import bcrypt from 'bcrypt'
 import * as uuid from 'uuid'
 
