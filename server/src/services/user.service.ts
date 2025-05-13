@@ -4,17 +4,17 @@ config()
 import bcrypt from 'bcrypt'
 import * as uuid from 'uuid'
 
-import UserModel from '../models/user-model.js'
-import UserDTO from '../dtos/user-dto.js'
-import ApiError from '../exceptions/api-error.js'
+import UserModel from '../models/user.model'
+import UserDTO from '../dtos/user.dto'
+import ApiError from '../exceptions/api.error'
 
-import mailService from './mail-service.js'
-import tokenService from './token-service.js'
+import mailService from './mail.service'
+import tokenService from './token.service'
 
 
 class UserService {
 
-    async registration(email, password) {
+    async registration(email: string, password: string) {
         const isEmailExist = await UserModel.findOne({ email })
         if (isEmailExist) throw ApiError.BadRequest('email already exist')
             
@@ -32,7 +32,7 @@ class UserService {
     }
 
 
-    async activate(activationLink) {
+    async activate(activationLink: string) {
         const user = await UserModel.findOne({ activationLink })
 
         if (!user) throw ApiError.BadRequest('invalid activate link')
@@ -43,8 +43,9 @@ class UserService {
     }
 
 
-    async login(email, password) {
+    async login(email: string, password: string) {
         const user = await UserModel.findOne({ email })
+
         if (!user) throw ApiError.BadRequest('wrong email or password')
 
         const isPasswordCorrect = await bcrypt.compare(password, user.password)
@@ -58,12 +59,12 @@ class UserService {
     }
 
 
-    async logout(refreshToken) {
+    async logout(refreshToken: string) {
         await tokenService.removeToken(refreshToken)
     }
 
 
-    async refreshToken(refreshToken) {
+    async refreshToken(refreshToken: string) {
         if (!refreshToken) throw ApiError.UnauthError()
 
         const userData = tokenService.validateRefreshToken(refreshToken)
@@ -72,7 +73,8 @@ class UserService {
         if (!userData || !tokenFromDb) throw ApiError.UnauthError()
         
         const user = await UserModel.findById(userData.id)
-        const userDto = new UserDTO(user)
+
+        const userDto = new UserDTO(user!)
         const tokens = tokenService.generateTokens({ ...userDto })
         await tokenService.saveToken(userDto.id, tokens.refreshToken)
 

@@ -1,14 +1,16 @@
 import { config } from 'dotenv'
 config()
 
+import { NextFunction, Request, Response } from 'express'
 import { validationResult } from "express-validator"
 
-import userService from "../services/user-service.js"
-import ApiError from "../exceptions/api-error.js"
+import userService from "../services/user.service"
+import ApiError from "../exceptions/api.error"
+
 
 class UserController {
 
-    async getAllUsers(req, res, next) {
+    async getAllUsers(req: Request, res: Response, next: NextFunction) {
         try {
             const users = await userService.getAllUsers()
             res.json(users)
@@ -18,7 +20,7 @@ class UserController {
     }
 
 
-    async registration(req, res, next) {
+    async registration(req: Request, res: Response, next: NextFunction) {
         try {
 
             const errors = validationResult(req)
@@ -39,7 +41,7 @@ class UserController {
     }   
     
     
-    async login(req, res, next) {
+    async login(req: Request, res: Response, next: NextFunction) {
         try {
             const { email, password } = req.body
 
@@ -53,7 +55,7 @@ class UserController {
     }   
 
 
-    async logout(req, res, next) {
+    async logout(req: Request, res: Response, next: NextFunction) {
         try {
             const { refreshToken } = req.cookies
 
@@ -67,20 +69,20 @@ class UserController {
     }   
 
 
-    async activate(req, res, next) {
+    async activate(req: Request, res: Response, next: NextFunction) {
         try {
             const activationLink = req.params.link
 
             await userService.activate(activationLink)
 
-            res.redirect(process.env.CLIENT_URL)
+            res.redirect(process.env.CLIENT_URL as string)
         } catch(error) {
             next(error)
         }
     }   
 
 
-    async refresh(req, res, next) {
+    async refresh(req: Request, res: Response, next: NextFunction) {
         try {
             const { refreshToken } = req.cookies
 

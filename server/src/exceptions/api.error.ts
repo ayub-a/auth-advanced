@@ -1,10 +1,14 @@
 
+type TError = Record<string, any>[]
+
+
 class ApiError extends Error {
 
-    status
-    errors
+    status: number
+    errors: TError
+    
 
-    constructor(status, message, errors = []) {
+    constructor(status: number, message: string, errors: TError = []) {
         super(message);
         this.status = status;
         this.errors = errors;
@@ -16,7 +20,7 @@ class ApiError extends Error {
     }
 
 
-    static BadRequest(message, errors = []) {
+    static BadRequest(message: string, errors: TError = []) {
         return new ApiError(400, message, errors)
     }
 
